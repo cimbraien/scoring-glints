@@ -1,39 +1,30 @@
-function isGood(str) {
-  const occurence = [0, 0, 0]; // index 0 = (, index 1 = [, index 2 = {
-  for (let i = 0; i < str.length; i++) {
-    switch (str[i]) {
-      case "(":
-        occurence[0]++;
-        break;
-      case "[":
-        occurence[1]++;
-        break;
-      case "{":
-        occurence[2]++;
-        break;
-      case ")":
-        occurence[0]--;
-        if (occurence[0] < 0) return false;
-        break;
-      case "]":
-        occurence[1]--;
-        if (occurence[1] < 0) return false;
-        break;
-      case "}":
-        occurence[2]--;
-        if (occurence[2] < 0) return false;
-        break;
-    }
-  }
-  return occurence[0] == 0 && occurence[1] == 0 && occurence[2] == 0;
-}
-
 // ({[]}) => true
 // ([][]{})=> true
 // ({)(]){[} => false
 // [)()] => false
+// [{]} => false
+
+const pair = {
+  "}": "{",
+  ")": "(",
+  "]": "[",
+};
+
+function isGood(str) {
+  const stack = [];
+  for (let i = 0; i < str.length; i++) {
+    if (Object.values(pair).includes(str[i])) {
+      stack.push(str[i]);
+    } else {
+      if (pair[str[i]] != stack.slice(-1)) return false;
+      stack.pop();
+    }
+  }
+  return stack.length == 0;
+}
 
 console.log(isGood("({[]})"));
 console.log(isGood("([][]{})"));
 console.log(isGood("({)(]){[}"));
 console.log(isGood("[)()]"));
+console.log(isGood("[{]}"));
